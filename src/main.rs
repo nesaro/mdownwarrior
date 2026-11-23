@@ -15,6 +15,6 @@ struct NoteCollection
 }
 
 fn main() {
-    let mycollection = NoteCollection{base_path: "/home/nesaro/wiki/".into(), naming_rules: NamingRules::Index};
+    let mycollection = NoteCollection{base_path: "/home/nesaro/wiki/".into(), naming_rules: NodeNamingRules::Index};
     println!("Hello, world!");
 }
