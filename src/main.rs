@@ -1,5 +1,6 @@
+use clap::Parser;
+use glob::glob;
 use std::path::PathBuf;
-use clap::{Parser, Subcommand};
 
 enum NodeNamingRules {
     Luhmann,
@@ -17,17 +18,24 @@ struct NoteCollection {
 #[command(version, about, long_about = None)]
 struct Cli {
     /// Optional string to filter on
-    name: Option<String>
+    name: Option<String>,
 }
 
 fn main() {
     let cli = Cli::parse();
-    let _mycollection = NoteCollection {
+    let mycollection = NoteCollection {
         base_path: "/home/nesaro/wiki/".into(),
         naming_rules: NodeNamingRules::Index,
     };
-    if let Some(name) = cli.name.as_deref() {
-        println!("Value for name: {name}");
+    let mut pattern: String = String::new();
+    pattern.push_str(mycollection.base_path.to_str().expect("reason"));
+    pattern.push_str("**/*");
+    if let Some(name) = cli.name {
+        pattern.push_str(&name.clone());
+        pattern.push_str("*");
+    };
+    pattern.push_str(".md");
+    for entry in glob(&pattern).expect("Failed to read glob pattern") {
+        println!("{}", entry.unwrap().to_str().unwrap());
     }
-    println!("Hello, world!");
 }
